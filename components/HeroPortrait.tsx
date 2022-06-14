@@ -14,7 +14,7 @@ const HeroPortrait: FC<Props> = ({ disabled, hero, isSelected, onClick }) => {
     <button
       className={classNames(["relative", "flex"], {
         [classNames(["outline", "outline-4", "outline-blue-700"])]: isSelected,
-        ["grayscale"]: disabled,
+        [classNames(["grayscale"])]: disabled,
       })}
       disabled={disabled}
       onClick={onClick}
