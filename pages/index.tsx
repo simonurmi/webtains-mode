@@ -1,16 +1,17 @@
 import { useMachine } from "@xstate/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useQuery } from "react-query";
 import Container from "../components/Container";
 import HeroPortrait from "../components/HeroPortrait";
 import captainsModeMachine from "../state";
+import group from "../utils/group";
 
 export interface Hero {
   id: number;
   img: string;
   localized_name: string;
+  primary_attr: "agi" | "int" | "str";
 }
 
 const Home: NextPage = () => {
@@ -19,6 +20,10 @@ const Home: NextPage = () => {
       data.json()
     );
   });
+
+  const heroes = data
+    ? group(Object.values(data), ({ primary_attr }) => primary_attr)
+    : null;
 
   const [state, send] = useMachine(captainsModeMachine);
 
@@ -31,32 +36,36 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <Container>
-          <div className="flex">
-            <div className="px-4">
-              {data ? (
-                <ul className="flex flex-wrap gap-4">
-                  {Object.values(data)
-                    .slice(0, 5)
-                    .map((hero) => (
-                      <li key={hero.id}>
-                        <HeroPortrait
-                          disabled={
-                            state.matches("idle") ||
-                            state.context.heroesBanned.includes(hero.id) ||
-                            state.context.heroesPicked.includes(hero.id)
-                          }
-                          hero={hero}
-                          isSelected={hero.id === state.context.selectedHeroId}
-                          onClick={() => {
-                            send({ type: "SELECT_HERO", heroId: hero.id });
-                          }}
-                        />
-                      </li>
-                    ))}
-                </ul>
+          <div className="grid grid-cols-[3fr,1fr] gap-4">
+            <div className="">
+              {heroes ? (
+                <div className="flex flex-col gap-8">
+                  {Object.entries(heroes).map(([group, heroGroup]) => (
+                    <ul className="flex flex-wrap gap-4" key={group}>
+                      {heroGroup.slice(0, 5).map((hero) => (
+                        <li key={hero.id}>
+                          <HeroPortrait
+                            disabled={
+                              state.matches("idle") ||
+                              state.context.heroesBanned.includes(hero.id) ||
+                              state.context.heroesPicked.includes(hero.id)
+                            }
+                            hero={hero}
+                            isSelected={
+                              hero.id === state.context.selectedHeroId
+                            }
+                            onClick={() => {
+                              send({ type: "SELECT_HERO", heroId: hero.id });
+                            }}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  ))}
+                </div>
               ) : null}
             </div>
-            <div className="px-4 space-y-4">
+            <div className="space-y-4 p-4 bg-slate-600 text-white">
               <p>Turn: {state.context.turn}</p>
               <p>
                 Hero:{" "}
