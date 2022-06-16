@@ -1,4 +1,16 @@
+# webtains-mode
+
+webtains-mode is a web implementation of Dota 2 Captains Mode drafting phase.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## References
+
+- [Captains Mode](https://dota2.fandom.com/wiki/Game_modes#Captains_Mode)
+
+### User Interface
+
+![Captains mode UI](https://pbs.twimg.com/media/DNgaH-lW4AAs9Qt?format=png&name=4096x4096)
 
 ## Getting Started
 
